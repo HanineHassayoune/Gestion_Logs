@@ -1,0 +1,77 @@
+services:
+  spring-a:
+    build: ./spring-app-a
+    container_name: spring-a
+    ports:
+      - "8081:8081"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: "spring-a"
+    networks:
+      - app-network
+    depends_on:
+      - fluent-bit-a
+
+  fluent-bit-a:
+    image: fluent/fluent-bit:2.1
+    container_name: fluent-bit-a
+    ports:
+      - "24224:24224"
+    volumes:
+      - ./spring-app-a/fluent-bit:/fluent-bit/etc:ro
+    networks:
+      - app-network
+    depends_on:
+      fluentd:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "/fluent-bit/bin/fluent-bit", "-tc", "/fluent-bit/etc/fluent-bit.conf" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  fluentd:
+    build: fluentd
+    container_name: fluentd
+    # Use extra_hosts to ensure host.docker.internal works on all Docker platforms
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./fluentd/conf:/fluentd/etc:ro
+      - fluentd-storage:/fluentd/log
+    environment:
+      - FLUENTD_CONF=fluent.conf
+    ports:
+      # Map the forward port for receiving logs from FluentBit
+      - "24225:24224"  # Fixed port number from 24226 to 24224
+      # Map the monitoring port to be accessible from the host
+      - "24220:24220"
+    networks:
+      - app-network
+      - elk-network
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:24220/api/plugins.json" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Add restart policy to ensure the container comes back up if it fails
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+  elk-network:
+    driver: bridge
+  shared-network:
+    external: false
+
+volumes:
+  elasticsearch-data:
+    driver: local
+  fluentd-storage:
+    driver: local
+  fluent-bit-a-storage:
+    driver: local
+  fluent-bit-b-storage:
+    driver: local
