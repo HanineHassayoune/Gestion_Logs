@@ -4,16 +4,10 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/projet-1/pom.xml" />
-        <option value="$PROJECT_DIR$/projet-2/pom.xml" />
+        <option value="$PROJECT_DIR$/project1/pom.xml" />
+        <option value="$PROJECT_DIR$/project2/pom.xml" />
         <option value="$PROJECT_DIR$/spring-app-a/pom.xml" />
-        <option value="$PROJECT_DIR$/spring-app-b/pom.xml" />
       </list>
-    </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/spring-app-b/pom.xml" />
-      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_19" default="true" project-jdk-name="19" project-jdk-type="JavaSDK">

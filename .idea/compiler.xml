@@ -10,6 +10,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="project1" target="17" />
+      <module name="project2" target="17" />
       <module name="spring-app-b" target="17" />
     </bytecodeTargetLevel>
   </component>

@@ -17,8 +17,8 @@ services:
   fluent-bit-a:
     image: fluent/fluent-bit:2.1
     container_name: fluent-bit-a
-    ports:
-      - "24224:24224"
+    #ports:
+      #- "24224:24224"
     volumes:
       - ./spring-app-a/fluent-bit:/fluent-bit/etc:ro
     networks:
@@ -44,7 +44,7 @@ services:
       - FLUENTD_CONF=fluent.conf
     ports:
       # Map the forward port for receiving logs from FluentBit
-      - "24225:24224"  # Fixed port number from 24226 to 24224
+      - "24224:24224"  # Fixed port number from 24226 to 24224
       # Map the monitoring port to be accessible from the host
       - "24220:24220"
     networks:
