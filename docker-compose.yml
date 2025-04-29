@@ -1,14 +1,14 @@
 services:
-  spring-a:
+  spring-app-a:
     build: ./spring-app-a
-    container_name: spring-a
+    container_name: spring-app-a
     ports:
       - "8081:8081"
     logging:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
-        tag: "spring-a"
+        tag: "spring-app-a"
     networks:
       - app-network
     depends_on:
@@ -75,3 +75,10 @@ volumes:
     driver: local
   fluent-bit-b-storage:
     driver: local
+
+
+
+
+
+
+
