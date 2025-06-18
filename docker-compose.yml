@@ -17,6 +17,22 @@ services:
     depends_on:
       - fluent-bit-a
 
+  spring-app-b:
+    build: ./spring-app-b
+    container_name: spring-app-b
+    ports:
+      - "8082:8082"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: "localhost:24224"
+        fluentd-async-connect: "true"
+        tag: "spring-app-b"
+    networks:
+      - app-network
+    depends_on:
+      - fluent-bit-b
+
   fluent-bit-a:
     image: fluent/fluent-bit:latest
     container_name: fluent-bit-a
@@ -28,6 +44,19 @@ services:
       - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf
     networks:
       - app-network
+
+  fluent-bit-b:
+    image: fluent/fluent-bit:latest
+    container_name: fluent-bit-b
+    ports:
+      - "24226:24226"
+      - "24226:24226/udp"
+    volumes:
+      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf
+    networks:
+      - app-network
+
 
   fluentd:
     image: fluent/fluentd:latest

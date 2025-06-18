@@ -8,8 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
+
 import java.util.Map;
 
 
@@ -42,6 +41,42 @@ public class LogController {
         return "Log ERROR généré avec exception";
     }
 
+
+    @GetMapping("/bad-request")
+    public ResponseEntity<?> badRequestExample() {
+        try {
+            throw new IllegalArgumentException("Paramètre invalide fourni.");
+        } catch (IllegalArgumentException e) {
+            LogModel log = new LogModel("Erreur de type BadRequest");
+            logger.error("CustomLog - {} - Exception: {}", log, e.getMessage(), e);
+            return ResponseEntity.badRequest().body("Erreur: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/division-error")
+    public ResponseEntity<?> divisionError() {
+        try {
+            int result = 10 / 0;
+            return ResponseEntity.ok(result);
+        } catch (ArithmeticException e) {
+            LogModel log = new LogModel("Erreur de division par zéro");
+            logger.error("CustomLog - {} - Exception: {}", log, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/index-error")
+    public ResponseEntity<?> indexError() {
+        try {
+            int[] numbers = {1, 2, 3};
+            int number = numbers[5]; // out of bounds
+            return ResponseEntity.ok(number);
+        } catch (IndexOutOfBoundsException e) {
+            LogModel log = new LogModel("Erreur d’index hors limites");
+            logger.error("CustomLog - {} - Exception: {}", log, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne: " + e.getMessage());
+        }
+    }
 
     private final Map<Long, String> fakeDb = Map.of(
             1L, "Objet 1",
